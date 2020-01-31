@@ -7,15 +7,19 @@
       :limit="1"
       :on-exceed="fileExceed"
       :accept="SheetJSFT"
+      :on-remove="fileRemoved"
       ref="fileupload"
       :auto-upload="false"
     >
       <el-button size="small" type="primary">点击上传</el-button>
-      <div slot="tip" class="el-upload__tip">只能上传excel文件</div>
+      <div slot="tip" class="el-upload__tip">只能上传表格文件</div>
     </el-upload>
 
     <div>
-      <el-table :data="tableData" style="width: 100%">
+      <el-table 
+        :data="tableData"
+        style="width: 100%"
+        height="500" >
         <el-table-column
           v-for="(item,key,index) in tableData[0]"
           :key="index"
@@ -91,6 +95,9 @@ export default {
         return val;
       }
 
+    },
+    fileRemoved (file, fileList) {
+      this.tableData = []
     },
     fileExceed (file, fileList) {
       this.$message.warning(
