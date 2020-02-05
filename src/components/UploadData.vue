@@ -38,7 +38,7 @@
 import XLSX from 'xlsx';
 import moment from 'moment'
 
-const _SheetJSFT = ["xlsx", "xlsb", "xls", "csv"]
+const _SheetJSFT = ["xlsx", "xlsb", "xls"]
   .map(function(x) {
     return "." + x;
   })
