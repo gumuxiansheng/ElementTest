@@ -2,7 +2,7 @@
   <div id="UploadData">
     <el-upload
       class="upload-demo"
-      action
+      action="http://localhost:8011/feedback/upload"
       :on-change="fileChanged"
       :limit="1"
       :on-exceed="fileExceed"
@@ -11,7 +11,8 @@
       ref="fileupload"
       :auto-upload="false"
     >
-      <el-button size="small" type="primary">点击上传</el-button>
+      <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+      <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
       <div slot="tip" class="el-upload__tip">只能上传表格文件</div>
     </el-upload>
 
@@ -108,6 +109,9 @@ export default {
     },
     fileChanged(file, fileList) {
       this.readExcel(file.raw);
+    },
+    submitUpload() {
+      this.$refs.fileupload.submit();
     }
   }
 };
