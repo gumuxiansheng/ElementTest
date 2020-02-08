@@ -2,7 +2,7 @@ import axios from 'axios';
 import Config from '../config/config';
 
 export default class Api {
-    FeedbackFileUploadUrl = Config.FeedbackApiBase + "/uploadTest";
+    FeedbackFileUploadUrl = Config.FeedbackApiBase + "/upload";
     FeedbackSchemaConfigUrl = Config.FeedbackApiBase + "/schema_config.json";
     feedbackConfig = {};
 

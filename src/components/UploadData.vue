@@ -25,7 +25,7 @@
     <div slot="tip" class="el-upload__tip">只能上传表格文件</div>
 
     <div>
-      <el-table :data="tableData" style="width: 100%" height="500">
+      <el-table :data="tableData" style="width: 100% height:100%">
         <el-table-column
           v-for="(item,key,index) in tableData[0]"
           :key="index"
