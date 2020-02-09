@@ -106,7 +106,7 @@ export default {
       for (key in res[0]) {
         if (
           key in schema1Map &&
-          schema1Map[key].display.indexOf("display") != -1
+          schema1Map[key].display.indexOf("upload") != -1
         ) {
           cols[key] = res[0][key];
         }
