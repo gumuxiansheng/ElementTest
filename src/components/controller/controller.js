@@ -3,11 +3,12 @@ import moment from 'moment'
 
 export default class ExcelController {
 
-    readExcel(fileRaw, vm) {
+    readExcel(fileRaw, successCallback, formatErrorCallback) {
         if (fileRaw.length <= 0) {
             return false;
         } else if (!/\.(xls|xlsx)$/.test(fileRaw.name.toLowerCase())) {
-            vm.$Message.error("上传格式不正确，请上传xls或者xlsx格式");
+            formatErrorCallback();
+            // vm.$Message.error("上传格式不正确，请上传xls或者xlsx格式");
             return false;
         }
 
@@ -23,9 +24,9 @@ export default class ExcelController {
                 const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname], {
                     range: 1
                 }); // 生成json表格内容
-                vm.tableData = ws;
-
-                console.log(vm.tableData);
+                successCallback(ws);
+                // vm.tableData = ws;
+                // console.log(vm.tableData);
             } catch (e) {
                 console.log(e);
                 return false;

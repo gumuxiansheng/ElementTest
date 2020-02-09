@@ -25,9 +25,9 @@
     <div slot="tip" class="el-upload__tip">只能上传表格文件</div>
 
     <div>
-      <el-table :data="tableData" style="width: 100% height:100%">
+      <el-table :data="tableData" style="width: 100%, height:500px">
         <el-table-column
-          v-for="(item,key,index) in tableData[0]"
+          v-for="(item,key,index) in tableColumns"
           :key="index"
           :formatter="excelController.dateFormat"
           :prop="key"
@@ -59,6 +59,7 @@ export default {
     return {
       fileList: [],
       tableData: [],
+      tableColumns: [],
       SheetJSFT: _SheetJSFT,
       excelController: _excelController,
       FeedbackFileUploadUrl: _api.FeedbackFileUploadUrl
@@ -79,7 +80,16 @@ export default {
       console.log("fileChanged");
     },
     filePreview(file, fileList) {
-      this.excelController.readExcel(file.raw, this);
+      this.excelController.readExcel(
+        file.raw,
+        workbookSheet => {
+          this.tableColumns = workbookSheet[0];
+          this.tableData = workbookSheet;
+        },
+        () => {
+          this.$Message.error("上传格式不正确，请上传xls或者xlsx格式");
+        }
+      );
     },
     submitUpload() {
       this.$refs.fileupload.submit();
@@ -89,15 +99,31 @@ export default {
       this.$message.error(`出现错误 ${res.data} `);
     },
     uploaded(res, file) {
+      var schema1Map = _api.feedbackConfig["schema1"];
       this.$refs.fileupload.clearFiles();
-      console.log(file);
+      var cols = {};
+      var key;
+      for (key in res[0]) {
+        if (
+          key in schema1Map &&
+          schema1Map[key].display.indexOf("display") != -1
+        ) {
+          cols[key] = res[0][key];
+        }
+      }
+
+      this.tableColumns = cols;
+      console.log(this.tableColumns);
       this.tableData = res;
       this.$message.success(`${file.name} 上传成功!`);
     },
     columnName(key) {
       var schema1Map = _api.feedbackConfig["schema1"];
+      if (Object.keys(schema1Map).length == 0) {
+        return key;
+      }
       if (key in schema1Map) {
-        return schema1Map[key];
+        return schema1Map[key].name;
       }
       return key;
     }
