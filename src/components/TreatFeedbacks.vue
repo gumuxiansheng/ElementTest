@@ -35,6 +35,7 @@
         <el-select v-model="editStatus" placeholder="情况是否属实">
           <el-option v-for="item in editStatusOptions" :key="item" :label="item" :value="item"></el-option>
         </el-select>
+        <el-checkbox v-model="treatFinished">是否处理完毕</el-checkbox>
         <el-input type="editContent" :rows="2" placeholder="反馈意见" v-model="editContent"></el-input>
         <el-input type="editPerson" :rows="1" placeholder="操作人" v-model="editPerson"></el-input>
         <el-button type="primary" @click="submitTreatment">提交</el-button>
@@ -100,6 +101,7 @@ export default {
       tableData: [],
       tableColumns: [],
       editContent: "",
+      treatFinished:false,
       editDialogVisible: false,
       commonController: _commonController,
       currentEditObject: {}
@@ -136,6 +138,9 @@ export default {
       this.currentEditObject.treatmentStatus = this.editStatus;
       this.currentEditObject.treatment = this.editContent;
       this.currentEditObject.treatPerson = this.editPerson;
+      if (this.treatFinished){
+        this.currentEditObject.status = "已处理";
+      }
       submits.push(this.currentEditObject);
 
       axios
@@ -152,6 +157,7 @@ export default {
       this.editStatus = row.treatmentStatus;
       this.editContent = row.treatment;
       this.editPerson = row.treatPerson;
+      this.treatFinished = row.status == "已处理";
       this.currentEditObject = row;
       this.editDialogVisible = true;
     },
