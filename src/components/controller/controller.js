@@ -1,7 +1,51 @@
 import XLSX from 'xlsx';
 import moment from 'moment'
+import Api from "../../api/api";
 
-export default class ExcelController {
+const _api = new Api();
+
+export default class CommonController {
+    dateFormat(row, column) {
+        var colName = column.property
+        var val = row[colName];
+        if (val == undefined) {
+            return "";
+        }
+        if (colName == '提交时间' && moment(val).isValid()) {
+            return moment(val).format("YYYY-MM-DD HH:mm:ss");
+        } else {
+            return val;
+        }
+    }
+
+    columnName(key) {
+        var schema1Map = _api.feedbackConfig["schema1"];
+        if (Object.keys(schema1Map).length == 0) {
+            return key;
+        }
+        if (key in schema1Map) {
+            return schema1Map[key].name;
+        }
+        return key;
+    }
+
+    visibleColumns(page, data) {
+        var schema1Map = _api.feedbackConfig["schema1"];
+        var cols = {};
+        var key;
+        for (key in data[0]) {
+            if (
+                key in schema1Map &&
+                schema1Map[key].display.indexOf(page) != -1
+            ) {
+                cols[key] = data[0][key];
+            }
+        }
+        return cols;
+    }
+}
+
+export class ExcelController {
 
     readExcel(fileRaw, successCallback, formatErrorCallback) {
         if (fileRaw.length <= 0) {
@@ -35,17 +79,8 @@ export default class ExcelController {
         fileReader.readAsBinaryString(fileRaw);
     }
 
-    dateFormat(row, column) {
-        var colName = column.property
-        var val = row[colName];
-        if (val == undefined) {
-            return "";
-        }
-        if (colName == '提交时间' && moment(val).isValid()) {
-            return moment(val).format("YYYY-MM-DD HH:mm:ss");
-        } else {
-            return val;
-        }
-
-    }
 };
+
+export class JsonController {
+
+}

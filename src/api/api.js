@@ -3,6 +3,9 @@ import Config from '../config/config';
 
 export default class Api {
     FeedbackFileUploadUrl = Config.FeedbackApiBase + "/upload";
+    FeedbackDistributeUrl = Config.FeedbackApiBase + "/distribute";
+    FeedbackTreatUrl = Config.FeedbackApiBase + "/treat";
+    FeedbackQueryUrl = Config.FeedbackApiBase + "/query";
     FeedbackSchemaConfigUrl = Config.FeedbackApiBase + "/schema_config.json";
     feedbackConfig = {};
 

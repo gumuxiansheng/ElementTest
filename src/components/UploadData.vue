@@ -29,9 +29,9 @@
         <el-table-column
           v-for="(item,key,index) in tableColumns"
           :key="index"
-          :formatter="excelController.dateFormat"
+          :formatter="commonController.dateFormat"
           :prop="key"
-          :label="columnName(key)"
+          :label="commonController.columnName(key)"
           width="150%"
         ></el-table-column>
       </el-table>
@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import CommonController from "./controller/controller";
 import ExcelController from "./controller/controller";
 import Config from "../config/config";
 import Api from "../api/api";
@@ -50,6 +51,7 @@ const _SheetJSFT = ["xlsx", "xlsb", "xls"]
   })
   .join(",");
 
+const _commonController = new CommonController();
 const _excelController = new ExcelController();
 const _api = new Api();
 
@@ -61,6 +63,7 @@ export default {
       tableData: [],
       tableColumns: [],
       SheetJSFT: _SheetJSFT,
+      commonController: _commonController,
       excelController: _excelController,
       FeedbackFileUploadUrl: _api.FeedbackFileUploadUrl
     };
@@ -99,33 +102,10 @@ export default {
       this.$message.error(`出现错误 ${res.data} `);
     },
     uploaded(res, file) {
-      var schema1Map = _api.feedbackConfig["schema1"];
       this.$refs.fileupload.clearFiles();
-      var cols = {};
-      var key;
-      for (key in res[0]) {
-        if (
-          key in schema1Map &&
-          schema1Map[key].display.indexOf("upload") != -1
-        ) {
-          cols[key] = res[0][key];
-        }
-      }
-
-      this.tableColumns = cols;
-      console.log(this.tableColumns);
+      this.tableColumns = _commonController.visibleColumns("upload", res);
       this.tableData = res;
       this.$message.success(`${file.name} 上传成功!`);
-    },
-    columnName(key) {
-      var schema1Map = _api.feedbackConfig["schema1"];
-      if (Object.keys(schema1Map).length == 0) {
-        return key;
-      }
-      if (key in schema1Map) {
-        return schema1Map[key].name;
-      }
-      return key;
     }
   }
 };
