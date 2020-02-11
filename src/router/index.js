@@ -7,6 +7,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import HelloWorld from '@/components/HelloWorld'
 import UploadData from '@/components/UploadData'
 import DistributeData from '@/components/DistributeData'
+import TreatFeedbacks from '@/components/TreatFeedbacks'
 
 Vue.use(Router)
 Vue.use(ElementUI)
@@ -27,6 +28,11 @@ export default new Router({
       path: '/distribute',
       name: 'DistributeData',
       component: DistributeData
+    },
+    {
+      path: '/treat',
+      name: 'TreatFeedbacks',
+      component: TreatFeedbacks
     }
   ]
 })

@@ -19,7 +19,7 @@ export default class CommonController {
     }
 
     columnName(key) {
-        var schema1Map = _api.feedbackConfig["schema1"];
+        var schema1Map = _api.feedbackConfig.schema["schema1"];
         if (Object.keys(schema1Map).length == 0) {
             return key;
         }
@@ -30,7 +30,7 @@ export default class CommonController {
     }
 
     visibleColumns(page, data) {
-        var schema1Map = _api.feedbackConfig["schema1"];
+        var schema1Map = _api.feedbackConfig.schema["schema1"];
         var cols = {};
         var key;
         for (key in data[0]) {
@@ -42,6 +42,14 @@ export default class CommonController {
             }
         }
         return cols;
+    }
+
+    validStatus(){
+        return _api.feedbackConfig.enumerate["status"];
+    }
+
+    validTreatmentStatus(){
+        return _api.feedbackConfig.enumerate["treatmentStatus"];
     }
 }
 
