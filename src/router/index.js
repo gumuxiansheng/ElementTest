@@ -9,6 +9,7 @@ import UploadData from '@/components/UploadData'
 import ExportData from '@/components/ExportData'
 import DistributeData from '@/components/DistributeData'
 import TreatFeedbacks from '@/components/TreatFeedbacks'
+import Summary from '@/components/Summary'
 
 Vue.use(Router)
 Vue.use(ElementUI)
@@ -39,6 +40,11 @@ export default new Router({
       path: '/export',
       name: 'ExportData',
       component: ExportData
+    },
+    {
+      path: '/summary',
+      name: 'Summary',
+      component: Summary
     }
   ]
 })

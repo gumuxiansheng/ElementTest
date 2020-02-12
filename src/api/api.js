@@ -7,6 +7,7 @@ export default class Api {
     FeedbackDistributeUrl = Config.FeedbackApiBase + "/distribute";
     FeedbackTreatUrl = Config.FeedbackApiBase + "/treat";
     FeedbackQueryUrl = Config.FeedbackApiBase + "/query";
+    FeedbackQuerySummaryUrl = Config.FeedbackApiBase + "/querySummary";
     FeedbackSchemaConfigUrl = Config.FeedbackApiBase + "/schema_config.json";
     FeedbackEnumerateUrl = Config.FeedbackApiBase + "/enumerate.json";
     feedbackConfig = {};
