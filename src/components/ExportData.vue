@@ -1,5 +1,5 @@
 <template>
-  <div id="TreatFeedbacks">
+  <div id="ExportData">
     <div>
       <el-date-picker
         v-model="datePickerDefault"
@@ -12,8 +12,14 @@
         @change="datePicked"
         ref="datePicker"
       ></el-date-picker>
-      <el-table :data="tableData" style="width: 100%" align="left">
+      <el-table
+        :data="tableData"
+        style="width: 100%"
+        align="left"
+        @selection-change="handleSelectionChange"
+      >
         >
+        <el-table-column type="selection" width="55" fixed></el-table-column>
         <el-table-column
           v-for="(item,key,index) in tableColumns"
           :key="index"
@@ -22,37 +28,26 @@
           :label="commonController.columnName(key)"
           width="150"
         ></el-table-column>
-        <el-table-column label="操作" fixed>
-          <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          </template>
-        </el-table-column>
       </el-table>
     </div>
     <div>
-      <el-dialog title="处理意见" :visible.sync="editDialogVisible" @closed="onEditClosed">
-        <div>{{currentEditObject.content}}</div>
-        <el-select v-model="editStatus" placeholder="情况是否属实">
-          <el-option v-for="item in editStatusOptions" :key="item" :label="item" :value="item"></el-option>
-        </el-select>
-        <el-checkbox v-model="treatFinished">是否处理完毕</el-checkbox>
-        <el-input type="editContent" :rows="2" placeholder="反馈意见" v-model="editContent"></el-input>
-        <el-input type="editPerson" :rows="1" placeholder="操作人" v-model="editPerson"></el-input>
-        <el-button type="primary" @click="submitTreatment">提交</el-button>
-      </el-dialog>
+      <el-button type="primary" @click="exportSelected">导出已选反馈</el-button>
     </div>
   </div>
 </template>
 
 <script>
 import CommonController from "./controller/CommonController";
+import ExcelController from "./controller/ExcelController";
 import Config from "../config/config";
 import Api from "../api/api";
 import axios from "axios";
 import TimeUtil from "../util/time";
+import regeneratorRuntime from 'regenerator'
 
 const _commonController = new CommonController();
 const _api = _commonController._api;
+const _excelController = new ExcelController();
 const _timeUtil = new TimeUtil();
 
 export default {
@@ -95,16 +90,10 @@ export default {
         new Date()
       ],
       pickedDateTime: [],
-      editStatusOptions: _commonController.validTreatmentStatus(),
-      editStatus: "",
-      editPerson:"",
       tableData: [],
       tableColumns: [],
-      editContent: "",
-      treatFinished:false,
-      editDialogVisible: false,
-      commonController: _commonController,
-      currentEditObject: {}
+      multipleSelection: [],
+      commonController: _commonController
     };
   },
   methods: {
@@ -116,54 +105,38 @@ export default {
       axios
         .post(_api.FeedbackQueryUrl, {
           from: from,
-          to: to,
-          distributedExclusive: true
+          to: to
         })
         .then(response => {
           this.tableColumns = _commonController.visibleColumns(
-            "edit",
+            "export",
             response.data
           );
           this.tableData = response.data;
-        }, _=> {
-          this.$message.error("操作出现错误");
         });
     },
-    submitTreatment() {
-      if (this.editStatus == ""){
-        this.$message.error("请确定情况是否属实");
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    exportSelected() {
+      if (this.multipleSelection.length == 0) {
+        this.$message.error("请选择");
         return;
       }
-      let submits = [];
-      this.currentEditObject.treatmentStatus = this.editStatus;
-      this.currentEditObject.treatment = this.editContent;
-      this.currentEditObject.treatPerson = this.editPerson;
-      if (this.treatFinished){
-        this.currentEditObject.status = "已处理";
-      }
-      submits.push(this.currentEditObject);
+      let selected = [];
 
-      axios
-        .post(_api.FeedbackTreatUrl, submits)
-        .then(response => {
-          this.datePicked(this.pickedDateTime);
-          this.$message.success(`成功处理${submits.length}条数据`);
-          this.editDialogVisible = false;
-        }, _=> {
-          this.$message.error("操作出现错误");
-        });
-    },
-    handleEdit(index, row) {
-      this.editStatus = row.treatmentStatus;
-      this.editContent = row.treatment;
-      this.editPerson = row.treatPerson;
-      this.treatFinished = row.status == "已处理";
-      this.currentEditObject = row;
-      this.editDialogVisible = true;
-    },
-    onEditClosed() {
-      this.editStatus = "";
-      this.editContent = "";
+      for (let index = 0; index < this.multipleSelection.length; index++) {
+        var element = this.multipleSelection[index];
+        let item = {};
+        for (var colName in element) {
+          if (colName in this.tableColumns) {
+            item[_commonController.columnName(colName)] = element[colName];
+          } else {
+          }
+        }
+        selected.push(item);
+      }
+      _excelController.writeExcel(selected);
     }
   },
   mounted() {

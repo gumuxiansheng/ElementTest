@@ -40,8 +40,8 @@
 </template>
 
 <script>
-import CommonController from "./controller/controller";
-import ExcelController from "./controller/controller";
+import CommonController from "./controller/CommonController";
+import ExcelController from "./controller/ExcelController";
 import Config from "../config/config";
 import Api from "../api/api";
 
@@ -52,8 +52,8 @@ const _SheetJSFT = ["xlsx", "xlsb", "xls"]
   .join(",");
 
 const _commonController = new CommonController();
+const _api = _commonController._api;
 const _excelController = new ExcelController();
-const _api = new Api();
 
 export default {
   name: "UploadData",

@@ -37,14 +37,14 @@
 </template>
 
 <script>
-import CommonController from "./controller/controller";
+import CommonController from "./controller/CommonController";
 import Config from "../config/config";
 import Api from "../api/api";
 import axios from "axios";
 import TimeUtil from "../util/time";
 
 const _commonController = new CommonController();
-const _api = new Api();
+const _api = _commonController._api;
 const _timeUtil = new TimeUtil();
 
 export default {

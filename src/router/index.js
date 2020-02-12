@@ -6,6 +6,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 
 import HelloWorld from '@/components/HelloWorld'
 import UploadData from '@/components/UploadData'
+import ExportData from '@/components/ExportData'
 import DistributeData from '@/components/DistributeData'
 import TreatFeedbacks from '@/components/TreatFeedbacks'
 
@@ -33,6 +34,11 @@ export default new Router({
       path: '/treat',
       name: 'TreatFeedbacks',
       component: TreatFeedbacks
+    },
+    {
+      path: '/export',
+      name: 'ExportData',
+      component: ExportData
     }
   ]
 })
